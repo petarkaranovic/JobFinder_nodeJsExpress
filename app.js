@@ -17,6 +17,11 @@ async function test(){
 test();
 const app=express();
 
+// adding the handlebars
+
+app.engine('handlebars',exphbs({defaultLayout:'main'}));
+
+
 // setting the index route
 app.get('/', (req,res)=> res.send('INDEX'));
 
