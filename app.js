@@ -20,6 +20,10 @@ const app=express();
 // setting the index route
 app.get('/', (req,res)=> res.send('INDEX'));
 
+// gig routes:
+
+app.use('/jobs', require('./routes/jobs'));
+
 // setting up the port
 const PORT = process.env.PORT || 5000;
 
