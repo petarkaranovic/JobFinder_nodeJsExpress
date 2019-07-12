@@ -8,8 +8,9 @@ async function fetchJobs(){
     try{
         router.get('/', (req,res)=>{
             var jobs = Job.findAll();
-            console.log(jobs);
-            res.sendStatus(200);
+            res.render('jobs',{
+                jobs
+            });
         })
     } catch(err){
         console.log(error);
