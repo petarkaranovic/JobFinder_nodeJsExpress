@@ -17,9 +17,10 @@ async function test(){
 test();
 const app=express();
 
-// adding the handlebars
+// adding the handlebars and the middleware
 
 app.engine('handlebars',exphbs({defaultLayout:'main'}));
+app.set('view engine','handlebars');
 
 
 // setting the index route
