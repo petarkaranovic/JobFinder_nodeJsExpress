@@ -18,10 +18,15 @@ async function fetchJobs(){
 }
 fetchJobs();
 
+// display add job form:
+
+router.get('/add', (req,res)=>
+    res.render('add'));
+
 // manually adding a job!
 async function addJob(){
     try{
-        router.get('/add', (req,res)=>{
+        router.post('/add', (req,res)=>{
         const data = {
         title:'Last try',
         technologies:'canva',

@@ -28,7 +28,7 @@ app.use(express.static(path.join(__dirname,'public')));
 
 
 // setting the index route
-app.get('/', (req,res)=> res.send('INDEX'));
+app.get('/', (req,res)=> res.render('index', {layout:'landing'}));
 
 // gig routes:
 
