@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const db=require('../config/database');
 const Job=require('../models/Job');
+// bringing the OP method for search
+const Sequelize = require('sequelize');
+const Op = Sequelize.Op;
 
 // get job list
 // async function fetchJobs(){
@@ -116,6 +119,8 @@ router.post("/add", (req, res) => {
     } else {
       budget = `$${budget}`;
     }
+    // Make lower case
+    technologies=technologies.toLowerCase();
 
     // inserting into a table:
     Job.create({
@@ -129,5 +134,15 @@ router.post("/add", (req, res) => {
       .catch(err => console.log(err));
   }
 });
+
+// Search for jobs.
+
+router.get('/search', (req,res)=>{
+    const {term} = req.query;
+
+    Job.findAll({where: {technologies: {[Op.like]:'%'+term+'%'}}})
+       .then(jobs=>res.render('jobs',{jobs}))
+       .catch(err=>console.log(err));
+})
 
 module.exports=router;
