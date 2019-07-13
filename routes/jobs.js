@@ -4,51 +4,130 @@ const db=require('../config/database');
 const Job=require('../models/Job');
 
 // get job list
-async function fetchJobs(){
-    try{
-        router.get('/', (req,res)=>{
-            var jobs = Job.findAll();
-            res.render('jobs',{
-                jobs
-            });
-        })
-    } catch(err){
-        console.log(error);
-    }
-}
-fetchJobs();
+// async function fetchJobs(){
+//     try{
+//         router.get('/', (req,res)=>{
+//             var jobs = Job.findAll();
+//             res.render('jobs',{
+//                 jobs
+//             });
+//         })
+//     } catch(err){
+//         console.log(error);
+//     }
+// }
+// fetchJobs();
 
+router.get("/", (req, res) => {
+  Job.findAll()
+    .then(jobs => {
+      res.render("jobs", {
+        jobs
+      });
+    })
+    .catch(err => console.log(err));
+});
 // display add job form:
 
 router.get('/add', (req,res)=>
     res.render('add'));
 
 // manually adding a job!
-async function addJob(){
-    try{
-        router.post('/add', (req,res)=>{
-        const data = {
-        title:'Last try',
-        technologies:'canva',
-        budget:'$999',
-        description:' aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-        contact_email:'user4@gmail.com'
-            }
-        let{title,technologies,budget,description,contact_email} = data;
-        Job.create({
-            title,
-            technologies,
-            budget,
-            description,
-            contact_email
-        })
-        res.redirect("/jobs");
-        })
-    } catch (err){
-        console.log(err)
-    }
-}
-addJob();
+// async function addJob(){
+//     try{
+//         router.post('/add', (req,res)=>{    
+//         let{title,technologies,budget,description,contact_email} = req.body;
+//         // field validation
+//         let errors =[];
+//         if(!title){
+//             errors.push({text:'Please add a title'})
+//         }
+//         if (!technologies) {
+//             errors.push({ text: "Please add technologies that are requested for this job" });
+//         }
+//         if (!description) {
+//             errors.push({ text: "Please add a description" });
+//         }
+//         if (!contact_email) {
+//           errors.push({ text: "Please add a contact email" });
+//         }
 
+//         //  check for errors 
+//         if(errors.length>0){
+//             res.render("add", {
+//               errors,
+//               title,
+//               technologies,
+//               budget,
+//               description,
+//               contact_email
+//             });
+//         } else {
+//           Job.create({
+//           title,
+//           technologies,
+//           budget,
+//           description,
+//           contact_email
+//         });
+//         }
+
+//         res.redirect("/jobs");
+//         })
+//     } catch (err){
+//         console.log(err)
+//     }
+// }
+// addJob();
+
+router.post("/add", (req, res) => {
+  let { title, technologies, budget, description, contact_email } = req.body;
+
+  // validating fields
+  let errors = [];
+
+  if (!title) {
+    errors.push({ text: "Please add a title." });
+  }
+  if (!technologies) {
+    errors.push({ text: "Please add technologies." });
+  }
+  if (!description) {
+    errors.push({ text: "Please add a description." });
+  }
+  if (!contact_email) {
+    errors.push({ text: "Please add a contact email." });
+  }
+
+  // check for errors:
+
+  if (errors.length > 0) {
+    res.render("add", {
+      errors,
+      title,
+      technologies,
+      budget,
+      description,
+      contact_email
+    });
+  } else {
+    if (!budget) {
+      budget = "Unknown";
+    } else {
+      budget = `$${budget}`;
+    }
+
+    // inserting into a table:
+    Job.create({
+      title,
+      technologies,
+      budget,
+      description,
+      contact_email
+    })
+      .then(job => res.redirect("/jobs"))
+      .catch(err => console.log(err));
+  }
+});
 
 module.exports=router;
